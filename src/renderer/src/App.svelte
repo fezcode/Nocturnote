@@ -34,10 +34,6 @@
   let showAbout = $state(false);
   let rainMode = $state(false);
   
-  // Formatting Toolbar State
-  let showToolbar = $state(false);
-  let toolbarPos = $state({ x: 0, y: 0 });
-
   // Search State
   let searchQuery = $state('');
   let replaceQuery = $state('');
@@ -129,7 +125,9 @@
   // --- HIGHLIGHTER ---
   let highlightedHTML = $derived.by(() => {
     if (!showSearch || !searchQuery) return escapeHtml(content);
-    const regex = new RegExp(`(${escapeRegExp(searchQuery)})`, 'gi');
+    // Escape the query for HTML entities first, so we match against the escaped content
+    const escapedQuery = escapeHtml(searchQuery);
+    const regex = new RegExp(`(${escapeRegExp(escapedQuery)})`, 'gi');
     let count = -1;
     return escapeHtml(content).replace(regex, (match) => {
         count++;
@@ -143,7 +141,7 @@
   }
 
   function escapeRegExp(string: string) {
-    return string.replace(/[.*+?^${}()|[\\]/g, '\\$&');
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   onMount(() => {
@@ -256,10 +254,12 @@
     } else {
         const currentCaret = textAreaRef.selectionEnd || 0;
         if (direction === 'next') {
-            const foundIdx = matches.findIndex(i => i > currentCaret - (searchQuery.length - 1));
+            // Find first match that starts at or after the current caret position
+            const foundIdx = matches.findIndex(i => i >= currentCaret);
             targetMatchArrayIndex = foundIdx !== -1 ? foundIdx : 0;
             if (foundIdx === -1) flashStatus('Wrapped Top');
         } else {
+            // Find last match that starts before the current selection start
             let foundIdx = -1;
             for (let i = matches.length - 1; i >= 0; i--) {
                 if (matches[i] < textAreaRef.selectionStart) {
@@ -379,79 +379,24 @@
     setTimeout(() => statusMessage = '', 2000);
   }
 
-  async function applyFormat(type: 'bold' | 'italic') {
-      if (!textAreaRef) return;
-      const start = textAreaRef.selectionStart;
-      const end = textAreaRef.selectionEnd;
-      
-      const selectedText = content.substring(start, end);
-      const marker = type === 'bold' ? '**' : '_';
-      const newText = marker + selectedText + marker;
+  function handleKeydown(e: KeyboardEvent) {
+    updateCursorPos();
+    const key = e.key.toLowerCase();
+    const meta = e.ctrlKey || e.metaKey;
 
-      content = content.substring(0, start) + newText + content.substring(end);
-      
-      await tick();
-      handleInput({ target: textAreaRef } as unknown as Event);
-      
-      textAreaRef.setSelectionRange(start, start + newText.length);
-      textAreaRef.focus();
-      showToolbar = false;
-  }
+    if (meta && key === 'f') { e.preventDefault(); toggleSearch(); return; }
+    if (meta && key === 'h') { e.preventDefault(); toggleSearch(); showReplace = true; return; }
 
-  function handleTextareaKeydown(e: KeyboardEvent) {
-      const ctrl = e.ctrlKey || e.metaKey;
-      const key = e.key.toLowerCase();
-
-      if (ctrl) {
-          if (key === 'b') {
-              e.preventDefault();
-              applyFormat('bold');
-          } else if (key === 'i') {
-              e.preventDefault();
-              applyFormat('italic');
-          }
-      }
-      updateCursorPos();
-      if (key === 'f' && ctrl) { e.preventDefault(); toggleSearch(); return; }
-      if (key === 'h' && ctrl) { e.preventDefault(); toggleSearch(); showReplace = true; return; }
-      
-      if (!showSettings && !showSearch && !showUnsavedDialog) {
-        if (key === 's' && ctrl) { e.preventDefault(); handleSave(); }
-        if (key === 'o' && ctrl) { e.preventDefault(); confirmAction(handleOpen); }
-        if (key === 'n' && ctrl) { e.preventDefault(); confirmAction(handleNew); }
-      }
-      if (e.key === 'Escape') {
-          if (showSettings) showSettings = false;
-          if (showUnsavedDialog) closeUnsavedDialog();
-      }
-  }
-
-  function handleMouseUp(e: MouseEvent) {
-      setTimeout(() => {
-          if (!textAreaRef) return;
-          const start = textAreaRef.selectionStart;
-          const end = textAreaRef.selectionEnd;
-
-          if (start !== end) {
-              showToolbar = true;
-              toolbarPos = { x: e.clientX, y: e.clientY + 15 }; 
-          } else {
-              showToolbar = false;
-          }
-      }, 0);
-  }
-
-  function handleKeyUp(e: KeyboardEvent) {
-      if (!textAreaRef) return;
-      const start = textAreaRef.selectionStart;
-      const end = textAreaRef.selectionEnd;
-      if (start === end) {
-          showToolbar = false;
-      }
-  }
-
-  function handleTextAreaClick() {
-      onEditorClick();
+    // Safety check shortcuts
+    if (!showSettings && !showSearch && !showUnsavedDialog) {
+      if (meta && key === 's') { e.preventDefault(); handleSave(); }
+      if (meta && key === 'o') { e.preventDefault(); confirmAction(handleOpen); }
+      if (meta && key === 'n') { e.preventDefault(); confirmAction(handleNew); }
+    }
+    if (key === 'escape') {
+        if (showSettings) showSettings = false;
+        if (showUnsavedDialog) closeUnsavedDialog();
+    }
   }
 
   // --- CORE ACTIONS ---
@@ -530,7 +475,7 @@
   }
 </script>
 
-<svelte:window onkeydown={handleTextareaKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="h-screen w-screen flex flex-col overflow-hidden overscroll-none transition-colors duration-500 relative antialiased {themeClasses}" style="font-family: system-ui, sans-serif; text-rendering: optimizeLegibility;">
   
@@ -591,10 +536,6 @@
     {onEditorClick}
     {markdownMode}
     {markdownHTML}
-    onKeyDown={handleTextareaKeydown}
-    onKeyUp={handleKeyUp}
-    onMouseUp={handleMouseUp}
-    onSelect={handleMouseUp}
   />
 
   <Footer 
@@ -626,21 +567,5 @@
     onDontSave={onDialogDontSave} 
     onCancel={closeUnsavedDialog}
   />
-
-  <!-- Floating Formatting Toolbar moved to App root for z-index fix -->
-  {#if showToolbar}
-      <div 
-          transition:scale={{ duration: 150, start: 0.95 }}
-          class="fixed z-[200] flex items-center gap-1 p-1.5 rounded-lg shadow-xl border {notepadMode ? 'bg-white border-gray-200' : 'bg-[#18181b] border-[#2e3245]'}"
-          style="top: {toolbarPos.y}px; left: {toolbarPos.x}px; transform: translate(-50%, 0);"
-      >
-          <button onclick={() => applyFormat('bold')} class="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/10 {notepadMode ? 'text-gray-700' : 'text-gray-300'} transition-colors" title="Bold (Ctrl+B)">
-              <Bold size="16" strokeWidth={2.5} />
-          </button>
-          <button onclick={() => applyFormat('italic')} class="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/10 {notepadMode ? 'text-gray-700' : 'text-gray-300'} transition-colors" title="Italic (Ctrl+I)">
-              <Italic size="16" strokeWidth={2.5} />
-          </button>
-      </div>
-  {/if}
 
 </div>
