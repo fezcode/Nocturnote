@@ -7,7 +7,9 @@ import icon from '../../resources/icon.png?asset'
 let mainWindow: BrowserWindow | null = null
 let pendingFile: { content: string; filePath: string } | null = null
 
-async function loadFileFromArgv(argv: string[]): Promise<{ content: string; filePath: string } | null> {
+async function loadFileFromArgv(
+  argv: string[]
+): Promise<{ content: string; filePath: string } | null> {
   // In production on Windows, the first argument is the executable, the second is often the file path.
   // We skip this in dev to avoid picking up dev server args.
   if (!is.dev && process.platform === 'win32' && argv.length >= 2) {
@@ -146,9 +148,9 @@ if (!gotTheLock) {
 
     // Handle Initial File Check from Renderer
     ipcMain.handle('get-initial-file', () => {
-        const file = pendingFile;
-        pendingFile = null; // Clear it
-        return file;
+      const file = pendingFile
+      pendingFile = null // Clear it
+      return file
     })
 
     ipcMain.handle('get-app-version', () => app.getVersion())

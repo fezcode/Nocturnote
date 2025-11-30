@@ -4,22 +4,22 @@ Nocturnote is a sleek, modern, and highly customizable note-taking application b
 
 ## Features
 
--   **Customizable Interface:** Choose your preferred font family, font size, font weight, and line height. Toggle word wrap and line numbers to suit your writing style.
--   **File Management:** Easily create new notes, open existing `.txt` or `.md` files, and save your work.
--   **Search and Replace:** Quickly find specific text within your notes and replace it with new content.
--   **Notepad Mode:** Experience a classic notepad aesthetic with a toggleable "Notepad Mode."
--   **Rain Mode:** A unique visual effect to enhance your writing experience.
--   **Status Bar:** Keep track of your line and column position, character count, and file encoding (UTF-8).
--   **Unsaved Changes Protection:** Never lose your work with built-in prompts for unsaved changes before closing or opening new files.
--   **Cross-Platform:** Built with Electron, Nocturnote is designed to run seamlessly across different operating systems.
+- **Customizable Interface:** Choose your preferred font family, font size, font weight, and line height. Toggle word wrap and line numbers to suit your writing style.
+- **File Management:** Easily create new notes, open existing `.txt` or `.md` files, and save your work.
+- **Search and Replace:** Quickly find specific text within your notes and replace it with new content.
+- **Notepad Mode:** Experience a classic notepad aesthetic with a toggleable "Notepad Mode."
+- **Rain Mode:** A unique visual effect to enhance your writing experience.
+- **Status Bar:** Keep track of your line and column position, character count, and file encoding (UTF-8).
+- **Unsaved Changes Protection:** Never lose your work with built-in prompts for unsaved changes before closing or opening new files.
+- **Cross-Platform:** Built with Electron, Nocturnote is designed to run seamlessly across different operating systems.
 
 ## Technologies Used
 
-*   **Electron:** For building cross-platform desktop applications.
-*   **Svelte:** A modern JavaScript framework for building user interfaces.
-*   **TypeScript:** For type-safe JavaScript development.
-*   **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
-*   **electron-vite:** A fast development setup for Electron apps.
+- **Electron:** For building cross-platform desktop applications.
+- **Svelte:** A modern JavaScript framework for building user interfaces.
+- **TypeScript:** For type-safe JavaScript development.
+- **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+- **electron-vite:** A fast development setup for Electron apps.
 
 ## Installation
 
@@ -27,8 +27,8 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-*   Node.js (LTS version recommended)
-*   npm or yarn (npm is used in the commands below)
+- Node.js (LTS version recommended)
+- npm or yarn (npm is used in the commands below)
 
 ### Steps
 
@@ -66,16 +66,16 @@ This will create distributable packages for your operating system in the `out` d
 
 You can also build for specific platforms:
 
-*   **Windows:** `npm run build:win`
-*   **macOS:** `npm run build:mac`
-*   **Linux:** `npm run build:linux`
-*   **Unpacked (for debugging):** `npm run build:unpack`
+- **Windows:** `npm run build:win`
+- **macOS:** `npm run build:mac`
+- **Linux:** `npm run build:linux`
+- **Unpacked (for debugging):** `npm run build:unpack`
 
 ### Other Scripts
 
-*   `npm run format`: Format code with Prettier.
-*   `npm run lint`: Lint code with ESLint.
-*   `npm run typecheck`: Run TypeScript type checks.
+- `npm run format`: Format code with Prettier.
+- `npm run lint`: Lint code with ESLint.
+- `npm run typecheck`: Run TypeScript type checks.
 
 ## Contributing
 
