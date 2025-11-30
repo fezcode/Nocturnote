@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   import type { AppSettings } from '../types';
+  import Dropdown from './Dropdown.svelte';
 
   let { showSettings = $bindable(), settings = $bindable() } = $props<{
     showSettings: boolean;
@@ -15,10 +16,10 @@
   });
 
   const fontOptions = [
-    { name: 'Modern Mono', value: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace", label: 'System UI' },
-    { name: 'Classic Console', value: "Consolas, 'Liberation Mono', Menlo, Courier, monospace", label: 'Retro' },
-    { name: 'Clean Sans', value: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif", label: 'Modern UI' },
-    { name: 'Elegant Serif', value: "Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif", label: 'Reading' }
+    { label: 'Modern Mono', value: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace" },
+    { label: 'Classic Console', value: "Consolas, 'Liberation Mono', Menlo, Courier, monospace" },
+    { label: 'Clean Sans', value: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" },
+    { label: 'Elegant Serif', value: "Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif" }
   ];
 
   const weightOptions = [
@@ -42,32 +43,15 @@
         <h2 class="text-sm font-semibold tracking-wide text-[#f4f4f5]">Appearance <span class="ml-2 text-[10px] font-normal text-[#71717a] opacity-60">v{appVersion}</span></h2>
         <button onclick={() => showSettings = false} class="text-[#71717a] hover:text-[#f4f4f5] transition-colors text-xs uppercase tracking-wider font-bold">Close</button>
       </div>
-      <div class="p-6 space-y-8">
-        <div class="space-y-3">
-           <label class="text-[11px] font-bold text-[#71717a] uppercase tracking-widest">Theme</label>
-           <div class="grid grid-cols-2 gap-2">
-             {#each themeOptions as theme}
-               <button onclick={() => settings.theme = theme.value as any} class="h-10 rounded-lg border flex flex-col items-center justify-center transition-all duration-200 group relative overflow-hidden {settings.theme === theme.value ? 'bg-[#818cf8]/10 border-[#818cf8]/50 text-[#818cf8]' : 'bg-[#2e3245]/50 border-transparent hover:bg-[#2e3245] text-[#a1a1aa] hover:text-[#f4f4f5]'}"><span class="text-xs font-medium z-10">{theme.label}</span></button>
-             {/each}
-           </div>
-        </div>
-        <div class="space-y-3">
-           <label class="text-[11px] font-bold text-[#71717a] uppercase tracking-widest">Typography</label>
-           <div class="grid grid-cols-2 gap-2">
-             {#each fontOptions as font}
-               <button onclick={() => settings.fontFamily = font.value} class="h-14 rounded-lg border flex flex-col items-center justify-center transition-all duration-200 group relative overflow-hidden {settings.fontFamily === font.value ? 'bg-[#818cf8]/10 border-[#818cf8]/50 text-[#818cf8]' : 'bg-[#2e3245]/50 border-transparent hover:bg-[#2e3245] text-[#a1a1aa] hover:text-[#f4f4f5]'}"><span class="text-sm font-medium z-10 truncate w-full px-2" style="font-family: {font.value}">{font.name}</span><span class="text-[10px] opacity-60 z-10">{font.label}</span></button>
-             {/each}
-           </div>
-        </div>
-        <div class="space-y-2">
-           <label class="text-[11px] font-bold text-[#71717a] uppercase tracking-widest">Weight</label>
-           <div class="grid grid-cols-3 gap-2">
-             {#each weightOptions as weight}
-               <button onclick={() => settings.fontWeight = weight.value} class="h-8 rounded-md text-xs font-medium transition-all duration-200 border {settings.fontWeight === weight.value ? 'bg-[#818cf8]/10 border-[#818cf8]/50 text-[#818cf8]' : 'bg-[#2e3245]/50 border-transparent hover:bg-[#2e3245] text-[#a1a1aa] hover:text-[#f4f4f5]'}">{weight.label}</button>
-             {/each}
-           </div>
-        </div>
-        <div class="space-y-6">
+      <div class="p-6 space-y-6">
+        
+        <Dropdown label="Theme" options={themeOptions} bind:value={settings.theme} />
+
+        <Dropdown label="Typography" options={fontOptions} bind:value={settings.fontFamily} />
+
+        <Dropdown label="Weight" options={weightOptions} bind:value={settings.fontWeight} />
+
+        <div class="space-y-6 pt-2">
             <div class="space-y-3"><div class="flex justify-between text-xs text-[#a1a1aa]"><span>Font Size</span><span class="font-mono text-[#818cf8]">{settings.fontSize}px</span></div><input type="range" min="12" max="32" step="1" bind:value={settings.fontSize} class="w-full h-1.5 bg-[#2e3245] rounded-full appearance-none cursor-pointer accent-[#818cf8]"></div>
             <div class="space-y-3"><div class="flex justify-between text-xs text-[#a1a1aa]"><span>Line Height</span><span class="font-mono text-[#818cf8]">{settings.lineHeight}</span></div><input type="range" min="1.0" max="2.5" step="0.1" bind:value={settings.lineHeight} class="w-full h-1.5 bg-[#2e3245] rounded-full appearance-none cursor-pointer accent-[#818cf8]"></div>
         </div>
