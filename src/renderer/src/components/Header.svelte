@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { 
-    Search, 
-    FileText, 
-    CloudRain, 
-    Settings, 
-    FilePlus, 
-    FolderOpen, 
-    Save, 
-    Minus, 
-    Square, 
+  import {
+    Search,
+    FileText,
+    CloudRain,
+    Settings,
+    FilePlus,
+    FolderOpen,
+    Save,
+    Minus,
+    Square,
     X,
     Info,
     Columns
   } from 'lucide-svelte';
   import type { AppSettings } from '../types';
 
-  let { 
-    settings = $bindable(), 
+  let {
+    settings = $bindable(),
     headerThemeClasses,
-    rainMode = $bindable(), 
-    showSettings = $bindable(), 
+    rainMode = $bindable(),
+    showSettings = $bindable(),
     showSearch = $bindable(),
     showAbout = $bindable(),
-    isSaved, 
-    fileName, 
+    isSaved,
+    fileName,
     isMacOrLinux,
     winClose,
     winMin,
@@ -55,6 +55,7 @@
 
   let notepadMode = $derived(settings.notepadMode);
   let markdownMode = $derived(settings.markdownMode);
+  let isLightHeader = $derived(settings.notepadMode || settings.theme === 'light');
 
   function toggleNotepadMode() {
       settings.notepadMode = !settings.notepadMode;
@@ -74,53 +75,53 @@
         <button onclick={winMax} class="w-3 h-3 rounded-full bg-[#28c840] hover:brightness-75 transition-all"></button>
       </div>
     {/if}
-    <div class="flex items-center gap-2 transition-opacity {notepadMode ? 'opacity-80' : 'opacity-60'} hover:opacity-100">
+    <div class="flex items-center gap-2 transition-opacity {isLightHeader ? 'opacity-80' : 'opacity-60'} hover:opacity-100">
       <div class="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentcolor] {isSaved ? 'text-emerald-400 bg-emerald-400' : 'text-amber-400 bg-amber-400'}"></div>
-      <span class="text-xs font-medium tracking-wide {notepadMode ? 'text-gray-600' : 'text-gray-400'}">{fileName}</span>
+      <span class="text-xs font-medium tracking-wide {isLightHeader ? 'text-gray-600' : 'text-gray-400'}">{fileName}</span>
     </div>
   </div>
 
   <!-- Right Toolbar - Wrapped in no-drag to prevent button drag issues, but allows drag in empty space to the left of this block -->
   <div class="flex items-center gap-1">
-     <button onclick={toggleSearch} title="Find (Ctrl+F)" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showSearch ? 'text-[#fbbf24] bg-[#fbbf24]/10' : (notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#fbbf24] hover:bg-white/5')}">
+     <button onclick={toggleSearch} title="Find (Ctrl+F)" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showSearch ? 'text-[#fbbf24] bg-[#fbbf24]/10' : (isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#fbbf24] hover:bg-white/5')}">
        <Search size="18" strokeWidth={2} />
      </button>
-     <div class="w-px h-4 mx-2 {notepadMode ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
-     <button onclick={toggleNotepadMode} title="Notepad Mode" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-800 bg-gray-200' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <div class="w-px h-4 mx-2 {isLightHeader ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
+     <button onclick={toggleNotepadMode} title="Notepad Mode" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-800 bg-gray-200' : (isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]')}">
        <FileText size="18" strokeWidth={2} />
      </button>
-     <button onclick={toggleMarkdownMode} title="Markdown Preview" class="p-2 rounded-lg transition-all active:scale-95 no-drag {markdownMode ? 'text-[#818cf8] bg-[#818cf8]/10' : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
+     <button onclick={toggleMarkdownMode} title="Markdown Preview" class="p-2 rounded-lg transition-all active:scale-95 no-drag {markdownMode ? 'text-[#818cf8] bg-[#818cf8]/10' : (isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]')}">
        <Columns size="18" strokeWidth={2} />
      </button>
-     <button onclick={() => rainMode = !rainMode} title="Rain Mode" class="p-2 rounded-lg transition-all active:scale-95 no-drag {rainMode ? 'text-[#818cf8] bg-[#818cf8]/10' : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
+     <button onclick={() => rainMode = !rainMode} title="Rain Mode" class="p-2 rounded-lg transition-all active:scale-95 no-drag {rainMode ? 'text-[#818cf8] bg-[#818cf8]/10' : (isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]')}">
        <CloudRain size="18" strokeWidth={2} />
      </button>
-     <div class="w-px h-4 mx-2 {notepadMode ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
-     <button onclick={() => showAbout = !showAbout} title="About" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showAbout ? (notepadMode ? 'bg-gray-200' : 'bg-white/10') : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
+     <div class="w-px h-4 mx-2 {isLightHeader ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
+     <button onclick={() => showAbout = !showAbout} title="About" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showAbout ? (isLightHeader ? 'bg-gray-200' : 'bg-white/10') : (isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]')}">
        <Info size="18" strokeWidth={2} />
      </button>
-     <button onclick={() => showSettings = !showSettings} title="Settings" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showSettings ? (notepadMode ? 'bg-gray-200' : 'bg-white/10') : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
+     <button onclick={() => showSettings = !showSettings} title="Settings" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showSettings ? (isLightHeader ? 'bg-gray-200' : 'bg-white/10') : (isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]')}">
        <Settings size="18" strokeWidth={2} />
      </button>
-     <div class="w-px h-4 mx-2 {notepadMode ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
-     <button onclick={() => confirmAction(handleNew)} title="New File" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <div class="w-px h-4 mx-2 {isLightHeader ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
+     <button onclick={() => confirmAction(handleNew)} title="New File" class="p-2 rounded-lg transition-all active:scale-95 no-drag {isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
        <FilePlus size="18" strokeWidth={2} />
      </button>
-     <button onclick={() => confirmAction(handleOpen)} title="Open" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <button onclick={() => confirmAction(handleOpen)} title="Open" class="p-2 rounded-lg transition-all active:scale-95 no-drag {isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
        <FolderOpen size="18" strokeWidth={2} />
      </button>
-     <button onclick={handleSave} title="Save" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <button onclick={handleSave} title="Save" class="p-2 rounded-lg transition-all active:scale-95 no-drag {isLightHeader ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
        <Save size="18" strokeWidth={2} />
      </button>
      {#if !isMacOrLinux}
       <div class="ml-2 flex h-full">
-          <button onclick={winMin} class="h-8 w-10 flex items-center justify-center no-drag {notepadMode ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
+          <button onclick={winMin} class="h-8 w-10 flex items-center justify-center no-drag {isLightHeader ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
             <Minus size="10" strokeWidth={4} />
           </button>
-          <button onclick={winMax} class="h-8 w-10 flex items-center justify-center no-drag {notepadMode ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
+          <button onclick={winMax} class="h-8 w-10 flex items-center justify-center no-drag {isLightHeader ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
             <Square size="10" strokeWidth={2} />
           </button>
-          <button onclick={winClose} class="h-8 w-10 flex items-center justify-center no-drag hover:bg-red-500 hover:text-white {notepadMode ? 'text-gray-500' : 'text-white'}">
+          <button onclick={winClose} class="h-8 w-10 flex items-center justify-center no-drag hover:bg-red-500 hover:text-white {isLightHeader ? 'text-gray-500' : 'text-white'}">
             <X size="14" strokeWidth={2} />
           </button>
       </div>
