@@ -65,46 +65,51 @@
     </div>
   </div>
 
-  <div class="flex items-center gap-1 no-drag">
-     <button onclick={toggleSearch} title="Find (Ctrl+F)" class="p-2 rounded-lg transition-all active:scale-95 {showSearch ? 'text-[#fbbf24] bg-[#fbbf24]/10' : (notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#fbbf24] hover:bg-white/5')}">
+  <div class="flex items-center gap-1">
+     <button onclick={toggleSearch} title="Find (Ctrl+F)" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showSearch ? 'text-[#fbbf24] bg-[#fbbf24]/10' : (notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#fbbf24] hover:bg-white/5')}">
        <Search size="18" strokeWidth={2} />
      </button>
      <div class="w-px h-4 mx-2 {notepadMode ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
-     <button onclick={() => notepadMode = !notepadMode} title="Notepad Mode" class="p-2 rounded-lg transition-all active:scale-95 {notepadMode ? 'text-gray-800 bg-gray-200' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <button onclick={() => notepadMode = !notepadMode} title="Notepad Mode" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-800 bg-gray-200' : 'text-gray-500 hover:text-[#818cf8]'}">
        <FileText size="18" strokeWidth={2} />
      </button>
-     <button onclick={() => rainMode = !rainMode} title="Rain Mode" class="p-2 rounded-lg transition-all active:scale-95 {rainMode ? 'text-[#818cf8] bg-[#818cf8]/10' : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
+     <button onclick={() => rainMode = !rainMode} title="Rain Mode" class="p-2 rounded-lg transition-all active:scale-95 no-drag {rainMode ? 'text-[#818cf8] bg-[#818cf8]/10' : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
        <CloudRain size="18" strokeWidth={2} />
      </button>
      <div class="w-px h-4 mx-2 {notepadMode ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
-     <button onclick={() => showAbout = !showAbout} title="About" class="p-2 rounded-lg transition-all active:scale-95 {showAbout ? (notepadMode ? 'bg-gray-200' : 'bg-white/10') : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
+     <button onclick={() => showAbout = !showAbout} title="About" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showAbout ? (notepadMode ? 'bg-gray-200' : 'bg-white/10') : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
        <Info size="18" strokeWidth={2} />
      </button>
-     <button onclick={() => showSettings = !showSettings} title="Settings" class="p-2 rounded-lg transition-all active:scale-95 {showSettings ? (notepadMode ? 'bg-gray-200' : 'bg-white/10') : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
+     <button onclick={() => showSettings = !showSettings} title="Settings" class="p-2 rounded-lg transition-all active:scale-95 no-drag {showSettings ? (notepadMode ? 'bg-gray-200' : 'bg-white/10') : (notepadMode ? 'text-gray-400' : 'text-gray-500 hover:text-[#818cf8]')}">
        <Settings size="18" strokeWidth={2} />
      </button>
      <div class="w-px h-4 mx-2 {notepadMode ? 'bg-gray-300' : 'bg-[#2e3245]'}"></div>
-     <button onclick={() => confirmAction(handleNew)} title="New File" class="p-2 rounded-lg transition-all active:scale-95 {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <button onclick={() => confirmAction(handleNew)} title="New File" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
        <FilePlus size="18" strokeWidth={2} />
      </button>
-     <button onclick={() => confirmAction(handleOpen)} title="Open" class="p-2 rounded-lg transition-all active:scale-95 {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <button onclick={() => confirmAction(handleOpen)} title="Open" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
        <FolderOpen size="18" strokeWidth={2} />
      </button>
-     <button onclick={handleSave} title="Save" class="p-2 rounded-lg transition-all active:scale-95 {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
+     <button onclick={handleSave} title="Save" class="p-2 rounded-lg transition-all active:scale-95 no-drag {notepadMode ? 'text-gray-400 hover:text-gray-800' : 'text-gray-500 hover:text-[#818cf8]'}">
        <Save size="18" strokeWidth={2} />
      </button>
      {#if !isMacOrLinux}
       <div class="ml-2 flex h-full">
-          <button onclick={winMin} class="h-8 w-10 flex items-center justify-center {notepadMode ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
+          <button onclick={winMin} class="h-8 w-10 flex items-center justify-center no-drag {notepadMode ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
             <Minus size="10" strokeWidth={4} />
           </button>
-          <button onclick={winMax} class="h-8 w-10 flex items-center justify-center {notepadMode ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
+          <button onclick={winMax} class="h-8 w-10 flex items-center justify-center no-drag {notepadMode ? 'hover:bg-gray-200 text-gray-500' : 'hover:bg-white/10 text-white'}">
             <Square size="10" strokeWidth={2} />
           </button>
-          <button onclick={winClose} class="h-8 w-10 flex items-center justify-center hover:bg-red-500 hover:text-white {notepadMode ? 'text-gray-500' : 'text-white'}">
+          <button onclick={winClose} class="h-8 w-10 flex items-center justify-center no-drag hover:bg-red-500 hover:text-white {notepadMode ? 'text-gray-500' : 'text-white'}">
             <X size="14" strokeWidth={2} />
           </button>
       </div>
      {/if}
   </div>
 </header>
+
+<style>
+  .draggable-region { -webkit-app-region: drag; }
+  .no-drag { -webkit-app-region: no-drag; }
+</style>
