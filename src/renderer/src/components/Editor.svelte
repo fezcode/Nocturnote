@@ -51,6 +51,20 @@
   let containerRef: HTMLElement
   let isResizing = $state(false)
   let splitRatio = $state(50)
+  let editorWidth = $state(0)
+
+  $effect(() => {
+    if (!textAreaRef) return
+    editorWidth = textAreaRef.clientWidth
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        editorWidth = entry.contentRect.width
+        calculateLineHeights()
+      }
+    })
+    observer.observe(textAreaRef)
+    return () => observer.disconnect()
+  })
 
   // Formatting Toolbar State
   let showToolbar = $state(false)
@@ -171,22 +185,22 @@
   }
 </script>
 
-<div
-  bind:this={measureRef}
-  aria-hidden="true"
-  class="antialiased"
-  style="visibility: hidden; position: absolute; top: 0; left: 0; z-index: -1000; width: {textAreaRef
-    ? textAreaRef.clientWidth
-    : 0}px; font-size: {settings.fontSize}px; font-family: {settings.fontFamily}; font-weight: {settings.fontWeight}; line-height: {lineHeightPx}px; white-space: {settings.wordWrap
-    ? 'pre-wrap'
-    : 'pre'}; word-break: break-word; padding-left: 16px; padding-right: 32px; box-sizing: border-box; text-rendering: optimizeLegibility;"
->
-  {#each textLines as line}
-    <div style="min-height: {lineHeightPx}px;">{line || ' '}</div>
-  {/each}
-</div>
-
 <main bind:this={containerRef} class="relative flex-1 z-10 flex overflow-hidden">
+  <div
+    bind:this={measureRef}
+    aria-hidden="true"
+    class="antialiased"
+    style="visibility: hidden; position: fixed; top: 0; left: 0; z-index: -1000; pointer-events: none; width: {editorWidth}px; font-size: {settings.fontSize}px; font-family: {settings.fontFamily}; font-weight: {settings.fontWeight}; line-height: {lineHeightPx}px; white-space: {settings.wordWrap
+      ? 'pre-wrap'
+      : 'pre'}; word-break: break-word; padding-left: 16px; padding-right: 32px; box-sizing: border-box; text-rendering: optimizeLegibility;"
+  >
+    {#if settings.wordWrap}
+      {#each textLines as line}
+        <div style="min-height: {lineHeightPx}px;">{line || ' '}</div>
+      {/each}
+    {/if}
+  </div>
+
   <!-- Editor Pane -->
   <div
     class="flex h-full min-w-0 overflow-hidden relative"
@@ -214,8 +228,8 @@
     <div class="flex-1 relative h-full min-w-0">
       <div
         bind:this={highlightRef}
-        class="absolute inset-0 z-0 pointer-events-none overflow-hidden pt-2 pb-8 pr-8 pl-4 antialiased"
-        style="font-size: {settings.fontSize}px; font-family: {settings.fontFamily}; font-weight: {settings.fontWeight}; line-height: {lineHeightPx}px; white-space: {settings.wordWrap
+        class="absolute inset-0 z-0 pointer-events-none overflow-hidden pt-2 pb-8 pl-4 antialiased"
+        style="padding-right: calc(2rem + 10px); font-size: {settings.fontSize}px; font-family: {settings.fontFamily}; font-weight: {settings.fontWeight}; line-height: {lineHeightPx}px; white-space: {settings.wordWrap
           ? 'pre-wrap'
           : 'pre'}; word-break: break-word; color: transparent;"
       >
@@ -232,16 +246,17 @@
         oninput={handleInput}
         spellcheck="false"
         style="
-                    font-size: {settings.fontSize}px; 
-                    font-family: {settings.fontFamily}; 
-                    font-weight: {settings.fontWeight}; 
-                    line-height: {lineHeightPx}px; 
-                    white-space: {settings.wordWrap ? 'pre-wrap' : 'pre'}; 
+                    overflow-y: scroll;
+                    font-size: {settings.fontSize}px;
+                    font-family: {settings.fontFamily};
+                    font-weight: {settings.fontWeight};
+                    line-height: {lineHeightPx}px;
+                    white-space: {settings.wordWrap ? 'pre-wrap' : 'pre'};
                     background-image: {notepadMode
           ? 'linear-gradient(transparent calc(100% - 1px), #cbd5e1 calc(100% - 1px))'
-          : 'none'}; 
-                    background-size: {notepadMode ? '100% ' + lineHeightPx + 'px' : 'auto'}; 
-                    background-position: {notepadMode ? '0 ' + baselineOffset + 'px' : '0 0'}; 
+          : 'none'};
+                    background-size: {notepadMode ? '100% ' + lineHeightPx + 'px' : 'auto'};
+                    background-position: {notepadMode ? '0 ' + baselineOffset + 'px' : '0 0'};
                     background-attachment: local;
                 "
         class="absolute inset-0 w-full h-full resize-none bg-transparent pt-2 pb-8 pr-8 pl-4 focus:outline-none leading-relaxed relative z-10 {notepadMode
@@ -456,6 +471,7 @@
     font-weight: 500;
     border-bottom: 1px solid transparent;
     transition: border-color 0.2s;
+    pointer-events: none;
   }
   :global(.prose a:hover) {
     border-bottom-color: #6366f1;

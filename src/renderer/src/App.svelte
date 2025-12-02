@@ -69,14 +69,18 @@
   let markdownMode = $derived(settings.markdownMode)
   let markdownHTML = $state('')
 
+  let markdownTimeout: ReturnType<typeof setTimeout>
   $effect(() => {
     if (markdownMode) {
-      const res = marked.parse(content)
-      if (res instanceof Promise) {
-        res.then((r) => (markdownHTML = r))
-      } else {
-        markdownHTML = res
-      }
+      clearTimeout(markdownTimeout)
+      markdownTimeout = setTimeout(() => {
+        const res = marked.parse(content)
+        if (res instanceof Promise) {
+          res.then((r) => (markdownHTML = r))
+        } else {
+          markdownHTML = res
+        }
+      }, 300)
     }
   })
 
@@ -137,7 +141,7 @@
 
   // --- HIGHLIGHTER ---
   let highlightedHTML = $derived.by(() => {
-    if (!showSearch || !searchQuery) return escapeHtml(content)
+    if (!showSearch || !searchQuery) return ''
     // Escape the query for HTML entities first, so we match against the escaped content
     const escapedQuery = escapeHtml(searchQuery)
     const regex = new RegExp(`(${escapeRegExp(escapedQuery)})`, 'gi')
@@ -218,6 +222,11 @@
   }
 
   async function calculateLineHeights() {
+    if (!settings.wordWrap) {
+      lineHeights = new Array(textLines.length).fill(lineHeightPx)
+      return
+    }
+
     await tick()
     if (!measureRef) return
     const heights: number[] = []
