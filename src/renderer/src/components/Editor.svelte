@@ -454,6 +454,23 @@
     font-family: 'ui-monospace', 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
     line-height: 1.6;
   }
+  :global(.prose)::-webkit-scrollbar {
+    width: 10px;
+  }
+  :global(.prose)::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  :global(.prose)::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  :global(.prose)::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
   :global(.prose h1) {
     font-size: 2.25em;
     font-weight: 800;

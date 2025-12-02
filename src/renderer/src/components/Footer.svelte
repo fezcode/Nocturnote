@@ -9,7 +9,8 @@
     searchFeedback,
     textAreaRef,
     currentLine,
-    currentCol
+    currentCol,
+    lineEnding
   } = $props<{
     content: string
     notepadMode: boolean
@@ -19,6 +20,7 @@
     textAreaRef: HTMLTextAreaElement
     currentLine: number
     currentCol: number
+    lineEnding: string
   }>()
 </script>
 
@@ -45,6 +47,6 @@
     {/if}
   </div>
   <div class="flex gap-4 font-mono w-1/3 justify-end">
-    <span>UTF-8</span><span>{content.length} chars</span>
+    <span>{lineEnding}</span><span>UTF-8</span><span>{content.length} chars</span>
   </div>
 </footer>

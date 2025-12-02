@@ -142,6 +142,7 @@
   let lineCount = $derived(textLines.length)
   let maxDigits = $derived(lineCount.toString().length)
   let lineNumWidth = $derived(Math.max(50, maxDigits * (settings.fontSize * 0.7) + 20))
+  let lineEnding = $derived(content.includes('\r\n') ? 'CRLF' : 'LF')
 
   // --- HIGHLIGHTER ---
   let highlightedHTML = $derived.by(() => {
@@ -430,6 +431,7 @@
     if (meta && key === 'f') { e.preventDefault(); toggleSearch(); return; }
     if (meta && key === 'h') { e.preventDefault(); toggleSearch(); showReplace = true; return; }
     if (meta && key === 's') { e.preventDefault(); handleSave(); return; }
+    if (meta && key === 'w') { e.preventDefault(); winClose(); return; }
 
     // Safety check shortcuts for disruptive actions
     if (!showSettings && !showSearch && !showUnsavedDialog) {
@@ -595,6 +597,7 @@
     {textAreaRef}
     {currentLine}
     {currentCol}
+    {lineEnding}
   />
 
   <SettingsModal bind:showSettings bind:settings />
