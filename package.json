@@ -1,6 +1,6 @@
 {
   "name": "Nocturnote",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Nocturnote Text Editor",
   "main": "./out/main/index.js",
   "author": "fezcode",

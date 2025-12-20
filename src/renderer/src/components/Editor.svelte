@@ -194,6 +194,23 @@
     const ctrl = e.ctrlKey || e.metaKey
     const key = e.key.toLowerCase()
 
+    if (key === 'tab') {
+      e.preventDefault()
+      const success = document.execCommand('insertText', false, '\t')
+      if (!success && textAreaRef) {
+        const start = textAreaRef.selectionStart
+        const end = textAreaRef.selectionEnd
+        content = content.substring(0, start) + '\t' + content.substring(end)
+        tick().then(() => {
+          handleInput({ target: textAreaRef } as unknown as Event)
+          if (textAreaRef) {
+            textAreaRef.selectionStart = textAreaRef.selectionEnd = start + 1
+          }
+        })
+      }
+      return
+    }
+
     if (ctrl) {
       if (key === 'b') {
         e.preventDefault()
